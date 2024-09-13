@@ -12,7 +12,12 @@ Tenant.init(
             allowNull: false,
             unique: true,
         },
-        schema_name: {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        slug: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,

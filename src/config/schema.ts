@@ -1,21 +1,24 @@
-import SequelizeInit from "@/app/services/SequelizeInit";
-import { Sequelize } from "sequelize";
+import { runMigrationsTenant } from "@/database/migrations";
+import { setRelationsTenant } from "@/database/relations";
+import sequelizeInstance from "./sequelize";
 
-const schema = 'prueba6';
 
-export default async function schemaInit(instance: Sequelize) {
-    if (!instance) throw new Error("Sequelize instance not exists");
+export default async function schemaInit(schemaName: string) {
+    if (!sequelizeInstance) return null;
 
     try {
-        const schemaNames: any = await instance.showAllSchemas({ logging: false });
+        const schemas: any = await sequelizeInstance.showAllSchemas({ logging: false });
 
-        if (!(schemaNames).includes(schema)) {
-            await instance.createSchema(schema, { logging: false });
-            
-            await SequelizeInit(schema);
+        if (!(schemas).includes(schemaName)) {
+            await sequelizeInstance.createSchema(schemaName, { logging: false });
+
+            await runMigrationsTenant(schemaName);
+            setRelationsTenant();
+
+            return "Tenant created successfully";
+        } else {
+            return "Tenant already exists";
         }
-
-
     } catch (error) {
         console.error("Error on create schema", error);
     }

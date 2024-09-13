@@ -1,14 +1,12 @@
 import express, { Express } from 'express';
 import { env } from './config/env';
 import expressLoader from './config/loader';
-import schemaInit from './config/schema';
-import sequelizeInstance from './config/sequelize';
-import SequelizeInit from './app/services/SequelizeInit';
+import sequelizeInit from './app/services/SequelizeInit';
 
 async function startServer() {
     const app: Express = express();
 
-    await schemaInit(sequelizeInstance);
+    await sequelizeInit()
 
     await expressLoader(app);
 
