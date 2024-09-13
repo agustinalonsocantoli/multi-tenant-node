@@ -1,11 +1,20 @@
 import express, { Express } from 'express';
 import { env } from './config/env';
 import expressLoader from './config/loader';
+import schemaInit from './config/schema';
+import sequelizeInstance from './config/sequelize';
+import SequelizeInit from './app/services/SequelizeInit';
 
-function startServer() {
+async function startServer() {
     const app: Express = express();
 
-    expressLoader(app);
+    const verify = await schemaInit(sequelizeInstance);
+
+    if(verify) {
+        await SequelizeInit(sequelizeInstance);
+    }
+
+    await expressLoader(app);
 
     app.listen(env.port, () => {
         const serverAddress = `Server address: ${`http://127.0.0.1:${env.port}`}`;

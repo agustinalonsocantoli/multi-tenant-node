@@ -6,6 +6,8 @@ import router from "../start/routes";
 import { responseEnhancer } from "@/app/middlewares/ResponseEnhacer";
 
 export default async function expressLoader(app: Express) {
+    if(!app) throw new Error("Express instance not exists");
+    
     app.use(responseEnhancer);
     app.use(morgan("dev"));
     app.use(json());
