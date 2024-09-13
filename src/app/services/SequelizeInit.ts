@@ -1,25 +1,16 @@
-import { Sequelize } from "sequelize";
-import TenantSuperUser from "../models/TenantSuperUser";
-import SuperUser from "../models/SuperUser";
-import Tenant from "../models/Tenant";
+import { setRelations, setRelationsTenant } from '@/database/relations';
+import { runMigrations, runMigrationsTenant } from "@/database/migrations";
 
-export default async function SequelizeInit(instance: Sequelize) {
-    if (!instance) throw new Error("Sequelize instance not exists");
-
+export default async function SequelizeInit(schemaName: string) {
     try {
-        const migrations = [
-            Tenant,
-            SuperUser,
-            TenantSuperUser
-        ]
+        await runMigrations()
+        setRelations();
 
-        Tenant.hasMany(TenantSuperUser, { foreignKey: "tenant_id", onDelete: "RESTRICT" });
-        SuperUser.hasMany(TenantSuperUser, { foreignKey: "superuser_id", onDelete: "RESTRICT" });
+        if (schemaName) {
+            await runMigrationsTenant(schemaName);
+            setRelationsTenant();
+        }
 
-        TenantSuperUser.belongsTo(Tenant, { foreignKey: "tenant_id" });
-        TenantSuperUser.belongsTo(SuperUser, { foreignKey: "superuser_id" });
-
-        migrations.forEach(async (migration) => migration.sync({ alter: true }));
     } catch (error) {
         console.error("Error on sync database", error);
     }

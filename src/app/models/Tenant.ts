@@ -30,7 +30,6 @@ Tenant.init(
     },
     {
         sequelize: sequelizeInstance,
-        modelName: "tenant",
-        schema: "test",
+        modelName: "tenants",
     }
 )

@@ -10,7 +10,7 @@ TenantSuperUser.init(
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: "tenant",
+                model: "tenants",
                 key: "id",
             },
             onDelete: "RESTRICT",
@@ -21,7 +21,7 @@ TenantSuperUser.init(
             type: DataTypes.UUID,
             allowNull: false,
             references: {
-                model: "superuser",
+                model: "superusers",
                 key: "id",
             },
             onDelete: "RESTRICT",
@@ -35,7 +35,6 @@ TenantSuperUser.init(
     },
     {
         sequelize: sequelizeInstance,
-        modelName: "tenant_superuser",
-        schema: "test",
+        modelName: "tenants_superusers",
     }
 )

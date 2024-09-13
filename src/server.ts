@@ -8,11 +8,7 @@ import SequelizeInit from './app/services/SequelizeInit';
 async function startServer() {
     const app: Express = express();
 
-    const verify = await schemaInit(sequelizeInstance);
-
-    if(verify) {
-        await SequelizeInit(sequelizeInstance);
-    }
+    await schemaInit(sequelizeInstance);
 
     await expressLoader(app);
 

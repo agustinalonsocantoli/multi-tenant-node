@@ -37,7 +37,6 @@ SuperUser.init(
     },
     {
         sequelize: sequelizeInstance,
-        modelName: "superuser",
-        schema: "test",
+        modelName: "superusers",
     }
 )
