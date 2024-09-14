@@ -1,12 +1,25 @@
+import AuthController from "@/app/controllers/AuthController";
 import TenantController from "@/app/controllers/TenantController";
-import RouterServices from "@/app/services/RouterServices";
+import UserController from "@/app/controllers/UserController";
+import { RequestTenant } from "@/app/middlewares/RequestTenant";
+import Router from "@/app/services/RouterServices";
 
-const Router = new RouterServices();
 
-Router.group(() => {
+Router.prefix('/v1').group(() => {
     Router.post('/tenant', TenantController.store)
-    Router.get('/tenant', TenantController.index)
+})
 
-}).prefix('/v1');
+Router.prefix('/v1/auth').post('/loginSuper', AuthController.loginSuperUser)
+
+Router.prefix('/v1/:tenant/auth').middleware(RequestTenant).post('/login', AuthController.login)
+
+Router
+    .prefix('/v1/:tenant')
+    .middleware(RequestTenant)
+    .group(() => {
+        Router.post('/users', UserController.store)
+        Router.get('/users', UserController.index)
+    })
+
 
 export default Router.getRouter();

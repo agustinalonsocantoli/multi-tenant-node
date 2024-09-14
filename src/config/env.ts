@@ -10,4 +10,5 @@ export const env = {
         database: process.env.DB_NAME || "multitenant",
         dialect: process.env.DB_DIALECT || "postgres",
     },
+    jwtSecret: process.env.JWT_SECRET || "98u2384hjbas32bjk4k3u990u32bn"
 }

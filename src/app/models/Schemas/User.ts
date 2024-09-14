@@ -1,7 +1,15 @@
+import argon2 from 'argon2';
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW, UUIDV4 } from "sequelize";
 
-export default class User extends Model { }
+export default class User extends Model {
+    public id!: string;
+    public name!: string;
+    public last_name!: string;
+    public email!: string;
+    public password!: string;
+    public created_at!: Date;
+}
 
 export function UserModel(schemaName: string) {
     return User.init(
@@ -39,7 +47,18 @@ export function UserModel(schemaName: string) {
         {
             sequelize: sequelizeInstance,
             modelName: "users",
-            schema: schemaName
+            schema: schemaName,
+            hooks: {
+                beforeSave: async (user: User) => {
+                    if (user.email) {
+                        user.email = user.email.toLowerCase();
+                    }
+
+                    if (user.password) {
+                        user.password = await argon2.hash(user.password);
+                    }
+                }
+            }
         }
     )
 }

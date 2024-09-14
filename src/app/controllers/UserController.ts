@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
-import Tenant from '../models/Tenant';
-import schemaInit from '@/config/schema';
+import { UserModel } from '../models/Schemas/User';
 
-class TenantController {
+class UsersController {
     public async index(request: Request, response: Response) {
-        try {
-            const tenants = await Tenant.findAll();
+        try{
+            const User = UserModel(request.tenant!);
+            
+            const users = await User.findAll();
 
-            response.ok(tenants);
+            response.ok(users);
         } catch (error) {
             console.log(error)
             response.badRequest();
@@ -20,19 +21,17 @@ class TenantController {
 
     public async store(request: Request, response: Response) {
         try {
-            const { name, slug } = request.body;
+            const { name, last_name, email, password } = request.body;
+            const User = UserModel(request.tenant!);
 
-            const createSchema = await schemaInit(slug);
-
-            if (!createSchema) return response.badRequest();
-
-            const tenant = await Tenant.create({ name, slug });
-
-            response.ok({
-                data: tenant,
-                message: createSchema
+            const user = await User.create({
+                name,
+                last_name,
+                email,
+                password
             });
 
+            response.created(user);
         } catch (error) {
             console.log(error)
             response.badRequest();
@@ -48,4 +47,4 @@ class TenantController {
     }
 }
 
-export default new TenantController();
+export default new UsersController();

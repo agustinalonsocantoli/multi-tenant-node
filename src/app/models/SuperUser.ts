@@ -1,7 +1,15 @@
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW, UUIDV4 } from "sequelize";
+import argon2 from "argon2";
 
-export default class SuperUser extends Model { }
+export default class SuperUser extends Model {
+    public id!: string;
+    public name!: string;
+    public last_name!: string;
+    public email!: string;
+    public password!: string;
+    public created_at!: Date;
+}
 
 SuperUser.init(
     {
@@ -38,5 +46,16 @@ SuperUser.init(
     {
         sequelize: sequelizeInstance,
         modelName: "superusers",
+        hooks: {
+            beforeSave: async (superuser: SuperUser) => {
+                if (superuser.email) {
+                    superuser.email = superuser.email.toLowerCase();
+                }
+
+                if (superuser.password) {
+                    superuser.password = await argon2.hash(superuser.password);
+                }
+            }
+        }
     }
 )
