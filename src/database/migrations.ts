@@ -1,4 +1,5 @@
 import { AccountModel } from "@/app/models/Schemas/Account";
+import { RolModel } from "@/app/models/Schemas/Rol";
 import { UserModel } from "@/app/models/Schemas/User";
 import SuperUser from "@/app/models/SuperUser";
 import Tenant from "@/app/models/Tenant";
@@ -15,10 +16,12 @@ export const runMigrations = async (): Promise<void> => {
 }
 
 export const runMigrationsTenant = async (schemaName: string): Promise<void> => {
+    const Rol = RolModel(schemaName);
     const User = UserModel(schemaName);
     const Account = AccountModel(schemaName);
 
     const migrations = [
+        Rol,
         User,
         Account,
     ]
@@ -26,4 +29,10 @@ export const runMigrationsTenant = async (schemaName: string): Promise<void> => 
     for (const migration of migrations) {
         await migration.sync({ alter: true });
     }
+
+    Rol.hasMany(User, { foreignKey: "user_id", onDelete: "cascade" });
+    User.hasMany(Account, { foreignKey: "account_id", onDelete: "cascade" });
+
+    User.belongsTo(Rol, { foreignKey: "rol_id" });
+    Account.belongsTo(User, { foreignKey: "user_id" });
 }

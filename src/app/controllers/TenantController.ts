@@ -7,7 +7,9 @@ class TenantController {
         try {
             const tenants = await Tenant.findAll();
 
-            response.ok(tenants);
+            response.ok({
+                data: tenants
+            });
         } catch (error) {
             console.log(error)
             response.badRequest();

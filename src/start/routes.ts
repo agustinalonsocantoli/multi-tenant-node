@@ -1,13 +1,20 @@
 import AuthController from "@/app/controllers/AuthController";
 import TenantController from "@/app/controllers/TenantController";
 import UserController from "@/app/controllers/UserController";
+import { Auth } from "@/app/middlewares/Auth";
 import { RequestTenant } from "@/app/middlewares/RequestTenant";
+import { SuperUserProtect } from "@/app/middlewares/SuperUserProtect";
+import { ValidateRol } from "@/app/middlewares/ValidateRol";
 import Router from "@/app/services/RouterServices";
 
 
-Router.prefix('/v1').group(() => {
-    Router.post('/tenant', TenantController.store)
-})
+Router
+    .prefix('/v1').
+    middleware(Auth, SuperUserProtect)
+    .group(() => {
+        Router.post('/tenant', TenantController.store)
+        Router.get('/tenant', TenantController.index)
+    })
 
 Router.prefix('/v1/auth').post('/loginSuper', AuthController.loginSuperUser)
 
@@ -15,7 +22,7 @@ Router.prefix('/v1/:tenant/auth').middleware(RequestTenant).post('/login', AuthC
 
 Router
     .prefix('/v1/:tenant')
-    .middleware(RequestTenant)
+    .middleware(RequestTenant, Auth, ValidateRol)
     .group(() => {
         Router.post('/users', UserController.store)
         Router.get('/users', UserController.index)

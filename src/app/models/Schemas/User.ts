@@ -1,12 +1,14 @@
 import argon2 from 'argon2';
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW, UUIDV4 } from "sequelize";
+import { RolType } from '@/app/enums/RolType';
 
 export default class User extends Model {
     public id!: string;
     public name!: string;
     public last_name!: string;
     public email!: string;
+    public rol_id!: number;
     public password!: string;
     public created_at!: Date;
 }
@@ -37,6 +39,16 @@ export function UserModel(schemaName: string) {
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            rol_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: RolType.USER,
+                references: {
+                    model: "roles",
+                    key: "id",
+                },
+                onDelete: "RESTRICT",
             },
             created_at: {
                 type: DataTypes.DATE,

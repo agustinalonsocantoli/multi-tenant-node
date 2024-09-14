@@ -1,5 +1,4 @@
 import { runMigrationsTenant } from "@/database/migrations";
-import { setRelationsTenant } from "@/database/relations";
 import sequelizeInstance from "./sequelize";
 
 
@@ -13,7 +12,6 @@ export default async function schemaInit(schemaName: string) {
             await sequelizeInstance.createSchema(schemaName, { logging: false });
 
             await runMigrationsTenant(schemaName);
-            setRelationsTenant();
 
             return "Tenant created successfully";
         } else {
