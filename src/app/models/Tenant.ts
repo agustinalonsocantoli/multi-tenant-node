@@ -1,7 +1,12 @@
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW } from "sequelize";
+import Query from "../services/QueryService";
 
-export default class Tenant extends Model { }
+export default class Tenant extends Model {
+    public static query() {
+        return new Query(Tenant);
+    }
+}
 
 Tenant.init(
     {

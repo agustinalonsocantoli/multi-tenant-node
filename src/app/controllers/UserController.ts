@@ -6,7 +6,7 @@ class UsersController {
         try {
             const User = UserModel(request.tenant!);
 
-            const users = await User.findAll();
+            const users = await User.query().exec();
 
             response.ok(users);
         } catch (error) {

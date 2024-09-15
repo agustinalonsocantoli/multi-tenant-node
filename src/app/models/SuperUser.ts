@@ -1,6 +1,7 @@
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW, UUIDV4 } from "sequelize";
 import argon2 from "argon2";
+import Query from "../services/QueryService";
 
 export default class SuperUser extends Model {
     public id!: string;
@@ -9,6 +10,10 @@ export default class SuperUser extends Model {
     public email!: string;
     public password!: string;
     public created_at!: Date;
+
+    public static query() {
+        return new Query(SuperUser);
+    }
 }
 
 SuperUser.init(

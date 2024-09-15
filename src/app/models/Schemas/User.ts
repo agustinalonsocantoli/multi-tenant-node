@@ -2,6 +2,7 @@ import argon2 from 'argon2';
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW, UUIDV4 } from "sequelize";
 import { RolType } from '@/app/enums/RolType';
+import Query from '@/app/services/QueryService';
 
 export default class User extends Model {
     public id!: string;
@@ -11,6 +12,10 @@ export default class User extends Model {
     public rol_id!: number;
     public password!: string;
     public created_at!: Date;
+
+    public static query() {
+        return new Query(User);
+    }
 }
 
 export function UserModel(schemaName: string) {

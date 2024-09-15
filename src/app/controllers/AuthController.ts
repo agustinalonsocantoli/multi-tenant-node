@@ -15,9 +15,7 @@ class AuthController {
 
             const User = UserModel(request.tenant!);
 
-            let user = await User.findOne({
-                where: { email: { [Op.iLike]: email } }
-            });
+            let user = await User.query().whereILike('email', email).first();
 
             if (!user) return response.unauthorized({ message: 'Invalid email or password' });
 
@@ -25,7 +23,7 @@ class AuthController {
 
             if (!isPasswordValid) return response.unauthorized({ message: 'Invalid email or password' });
 
-            user = await User.findByPk(user.id, { attributes: { exclude: ['password'] } });
+            user = await User.query().exclude(['password']).findById(user.id);
 
             const token = jwt.sign({ id: user?.id }, env.jwtSecret, { expiresIn: '5d' });
 
@@ -47,9 +45,7 @@ class AuthController {
 
             if (!email || !password) return response.badRequest();
 
-            let superUser = await SuperUser.findOne({
-                where: { email: { [Op.iLike]: email } }
-            });
+            let superUser = await SuperUser.query().whereILike('email', email).first();
 
             if (!superUser) return response.unauthorized({ message: 'Invalid email or password' });
 
@@ -57,7 +53,7 @@ class AuthController {
 
             if (!isPasswordValid) return response.unauthorized({ message: 'Invalid email or password' });
 
-            superUser = await SuperUser.findByPk(superUser.id, { attributes: { exclude: ['password'] } });
+            superUser = await SuperUser.query().exclude(['password']).findById(superUser.id);
 
             const token = jwt.sign({ id: superUser?.id }, env.jwtSecret, { expiresIn: '5d' });
 

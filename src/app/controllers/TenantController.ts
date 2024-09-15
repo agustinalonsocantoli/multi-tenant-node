@@ -5,7 +5,7 @@ import schemaInit from '@/config/schema';
 class TenantController {
     public async index(request: Request, response: Response) {
         try {
-            const tenants = await Tenant.findAll();
+            const tenants = await Tenant.query().exec();
 
             response.ok({
                 data: tenants
@@ -17,7 +17,18 @@ class TenantController {
     }
 
     public async show(request: Request, response: Response) {
-        response.ok({ data: 'show' });
+        try {
+            const { id } = request.params;
+
+            const tenant = await Tenant.query().findById(id);
+
+            response.ok({
+                data: tenant
+            });
+        } catch (error) {
+            console.log(error)
+            response.badRequest();
+        }
     }
 
     public async store(request: Request, response: Response) {
@@ -39,14 +50,6 @@ class TenantController {
             console.log(error)
             response.badRequest();
         }
-    }
-
-    public async update(request: Request, response: Response) {
-        response.ok({ data: 'update' });
-    }
-
-    public async destroy(request: Request, response: Response) {
-        response.ok({ data: 'delete' });
     }
 }
 

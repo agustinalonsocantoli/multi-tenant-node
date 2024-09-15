@@ -7,18 +7,16 @@ import { SuperUserProtect } from "@/app/middlewares/SuperUserProtect";
 import { ValidateRol } from "@/app/middlewares/ValidateRol";
 import Router from "@/app/services/RouterServices";
 
+Router.prefix('/v1/auth').post('/loginSuper', AuthController.loginSuperUser)
+Router.prefix('/v1/:tenant/auth').middleware(RequestTenant).post('/login', AuthController.login)
 
 Router
-    .prefix('/v1').
-    middleware(Auth, SuperUserProtect)
+    .prefix('/v1')
+    .middleware(Auth, SuperUserProtect)
     .group(() => {
         Router.post('/tenant', TenantController.store)
         Router.get('/tenant', TenantController.index)
     })
-
-Router.prefix('/v1/auth').post('/loginSuper', AuthController.loginSuperUser)
-
-Router.prefix('/v1/:tenant/auth').middleware(RequestTenant).post('/login', AuthController.login)
 
 Router
     .prefix('/v1/:tenant')
