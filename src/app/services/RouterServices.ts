@@ -29,7 +29,6 @@ class Router {
         return this;
     }
 
-    // Métodos HTTP para definir rutas
     get(path: string, controller: (req: Request, res: Response) => Promise<void>) {
         return this.addRoute('get', path, controller);
     }

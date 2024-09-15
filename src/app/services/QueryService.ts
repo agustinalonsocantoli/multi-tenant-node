@@ -40,7 +40,10 @@ class Query<T extends Model> {
         return this;
     }
 
-    public preload(include: Includeable | Includeable[]): this {
+    public preload(include: Includeable): this {
+        if (!this.options.include) {
+            this.options.include = [];
+        }
 
         this.options.include = include;
         return this;

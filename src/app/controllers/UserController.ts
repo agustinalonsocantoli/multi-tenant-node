@@ -1,10 +1,12 @@
+import { ModelSchema } from '@/database/migrations';
 import { Request, Response } from 'express';
-import { UserModel } from '../models/Schemas/User';
+import Validate from '../services/ValidateService';
+import { CreateUser, CreateUserValidator } from '../validators/CreateUserValidator';
 
 class UsersController {
     public async index(request: Request, response: Response) {
         try {
-            const User = UserModel(request.tenant!);
+            const { User } = ModelSchema(request.tenant!);
 
             const users = await User.query().exec();
 
@@ -21,30 +23,21 @@ class UsersController {
 
     public async store(request: Request, response: Response) {
         try {
-            const { name, last_name, email, password, rol_id } = request.body;
-            const User = UserModel(request.tenant!);
+            const validate = await Validate<CreateUser>(CreateUserValidator, request.body);
 
-            const user = await User.create({
-                name,
-                last_name,
-                email,
-                password,
-                rol_id: rol_id ?? null
-            });
+            if (validate.error) {
+                return response.badRequest(validate.error);
+            }
+
+            const { User } = ModelSchema(request.tenant!);
+
+            const user = await User.create(validate.data);
 
             response.created(user);
         } catch (error) {
             console.log(error)
             response.badRequest();
         }
-    }
-
-    public async update(request: Request, response: Response) {
-        response.ok({ data: 'update' });
-    }
-
-    public async destroy(request: Request, response: Response) {
-        response.ok({ data: 'delete' });
     }
 }
 

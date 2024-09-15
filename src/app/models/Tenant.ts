@@ -3,6 +3,12 @@ import { DataTypes, Model, NOW } from "sequelize";
 import Query from "../services/QueryService";
 
 export default class Tenant extends Model {
+    public id!: number;
+    public name!: string;
+    public slug!: string;
+    public active!: boolean;
+    public created_at!: Date;
+    
     public static query() {
         return new Query(Tenant);
     }

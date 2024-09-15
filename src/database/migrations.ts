@@ -16,9 +16,7 @@ export const runMigrations = async (): Promise<void> => {
 }
 
 export const runMigrationsTenant = async (schemaName: string): Promise<void> => {
-    const Rol = RolModel(schemaName);
-    const User = UserModel(schemaName);
-    const Account = AccountModel(schemaName);
+    const { Rol, User, Account } = ModelSchema(schemaName);
 
     const migrations = [
         Rol,
@@ -29,10 +27,22 @@ export const runMigrationsTenant = async (schemaName: string): Promise<void> => 
     for (const migration of migrations) {
         await migration.sync({ alter: true });
     }
+}
+
+export const ModelSchema = (schemaName: string) => {
+    const Rol = RolModel(schemaName);
+    const User = UserModel(schemaName);
+    const Account = AccountModel(schemaName);
 
     Rol.hasMany(User, { foreignKey: "user_id", onDelete: "cascade" });
     User.hasMany(Account, { foreignKey: "account_id", onDelete: "cascade" });
 
     User.belongsTo(Rol, { foreignKey: "rol_id" });
     Account.belongsTo(User, { foreignKey: "user_id" });
+
+    return {
+        Rol,
+        User,
+        Account,
+    }
 }

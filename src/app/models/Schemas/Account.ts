@@ -1,7 +1,19 @@
+import Query from "@/app/services/QueryService";
 import sequelizeInstance from "@/config/sequelize";
 import { DataTypes, Model, NOW, UUIDV4 } from "sequelize";
 
-export default class Account extends Model { }
+export default class Account extends Model { 
+    public id!: string;
+    public number!: string;
+    public amount!: number;
+    public max_output!: string;
+    public user_id!: string;
+    public created_at!: Date;
+
+    public static query() {
+        return new Query(Account);
+    }
+}
 
 export function AccountModel(schemaName: string) {
     return Account.init(

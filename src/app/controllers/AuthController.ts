@@ -1,10 +1,9 @@
 import { Response, Request } from 'express';
-import { Op } from 'sequelize';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { env } from '@/config/env';
-import { UserModel } from '../models/Schemas/User';
 import SuperUser from '../models/SuperUser';
+import { ModelSchema } from '@/database/migrations';
 
 class AuthController {
     public async login(request: Request, response: Response) {
@@ -13,7 +12,7 @@ class AuthController {
 
             if (!email || !password) return response.badRequest();
 
-            const User = UserModel(request.tenant!);
+            const { User, Rol } = ModelSchema(request.tenant!);
 
             let user = await User.query().whereILike('email', email).first();
 
@@ -23,7 +22,8 @@ class AuthController {
 
             if (!isPasswordValid) return response.unauthorized({ message: 'Invalid email or password' });
 
-            user = await User.query().exclude(['password']).findById(user.id);
+
+            user = await User.query().exclude(['password']).preload(Rol).findById(user.id);
 
             const token = jwt.sign({ id: user?.id }, env.jwtSecret, { expiresIn: '5d' });
 
