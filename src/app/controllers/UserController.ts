@@ -6,9 +6,9 @@ import { CreateUser, CreateUserValidator } from '../validators/CreateUserValidat
 class UsersController {
     public async index(request: Request, response: Response) {
         try {
-            const { User } = ModelSchema(request.tenant!);
+            const { User, Rol } = ModelSchema(request.tenant!);
 
-            const users = await User.query().exec();
+            const users = await User.query().exclude(["password"]).preload(Rol).exec();
 
             response.ok(users);
         } catch (error) {

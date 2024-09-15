@@ -34,8 +34,8 @@ export const ModelSchema = (schemaName: string) => {
     const User = UserModel(schemaName);
     const Account = AccountModel(schemaName);
 
-    Rol.hasMany(User, { foreignKey: "id", onDelete: "cascade" });
-    User.hasMany(Account, { foreignKey: "id", onDelete: "cascade" });
+    Rol.hasMany(User, { foreignKey: "user_id", onDelete: "cascade" });
+    User.hasMany(Account, { foreignKey: "account_id", onDelete: "cascade" });
 
     User.belongsTo(Rol, { foreignKey: "rol_id" });
     Account.belongsTo(User, { foreignKey: "user_id" });
