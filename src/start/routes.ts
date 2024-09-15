@@ -1,3 +1,4 @@
+import AccountController from "@/app/controllers/AccountController";
 import AuthController from "@/app/controllers/AuthController";
 import TenantController from "@/app/controllers/TenantController";
 import UserController from "@/app/controllers/UserController";
@@ -16,6 +17,17 @@ Router
     .group(() => {
         Router.post('/tenant', TenantController.store)
         Router.get('/tenant', TenantController.index)
+    })
+
+Router
+    .prefix('/v1/:tenant')
+    .middleware(RequestTenant, Auth)
+    .group(() => {
+        Router.get('/accounts', AccountController.index)
+        Router.get('/accounts', AccountController.show)
+        Router.post('/accounts', AccountController.store)
+        Router.put('/accounts', AccountController.update)
+        Router.delete('/accounts', AccountController.destroy)
     })
 
 Router

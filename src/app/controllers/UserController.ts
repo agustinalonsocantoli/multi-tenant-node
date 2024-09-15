@@ -18,7 +18,18 @@ class UsersController {
     }
 
     public async show(request: Request, response: Response) {
-        response.ok({ data: 'show' });
+        try {
+            const { id } = request.params;
+
+            const { User } = ModelSchema(request.tenant!);
+
+            const user = await User.query().findById(id);
+
+            response.ok(user);
+        } catch (error) {
+            console.log(error)
+            response.badRequest
+        }
     }
 
     public async store(request: Request, response: Response) {

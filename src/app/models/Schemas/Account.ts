@@ -30,11 +30,11 @@ export function AccountModel(schemaName: string) {
                 allowNull: false,
             },
             amount: {
-                type: DataTypes.DECIMAL,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
             },
             max_output: {
-                type: DataTypes.STRING,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
                 unique: true,
             },

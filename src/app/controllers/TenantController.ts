@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import Tenant from '../models/Tenant';
 import schemaInit from '@/config/schema';
+import { CreateTenant, CreateTenantValidator } from '../validators/CreateTenantValidator';
+import Validate from '../services/ValidateService';
 
 class TenantController {
     public async index(request: Request, response: Response) {
@@ -33,13 +35,17 @@ class TenantController {
 
     public async store(request: Request, response: Response) {
         try {
-            const { name, slug } = request.body;
+            const validate = await Validate<CreateTenant>(CreateTenantValidator, request.body);
 
-            const createSchema = await schemaInit(slug);
+            if (validate.error) {
+                return response.badRequest(validate.error);
+            }
+
+            const createSchema = await schemaInit(validate?.data?.slug!);
 
             if (!createSchema) return response.badRequest();
 
-            const tenant = await Tenant.create({ name, slug });
+            const tenant = await Tenant.create(validate.data);
 
             response.ok({
                 data: tenant,
